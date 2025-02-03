@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
+
+// https://docs.soliditylang.org/en/latest/solidity-by-example.html#simple-open-auction
+// auction solidity'nin sunduğu örnek, commentların ciddi miktarda temizlenmesi gerek.
+
+// önemli not: "After the end of the bidding period, the contract has to be called manually
+// for the beneficiary to receive their Ether - contracts cannot activate themselves."
+
 pragma solidity ^0.8.4;
 contract SimpleAuction {
-    // Parameters of the auction. Times are either
-    // absolute unix timestamps (seconds since 1970-01-01)
-    // or time periods in seconds.
-    address payable public beneficiary;
-    uint public auctionEndTime;
+    address payable public beneficiary; // Auction sahibi, highest bid'i alacak kişi.
+    uint public auctionEndTime; // absolute unix timestamp
 
     // Current state of the auction.
     address public highestBidder;
@@ -14,20 +18,12 @@ contract SimpleAuction {
     // Allowed withdrawals of previous bids
     mapping(address => uint) pendingReturns;
 
-    // Set to true at the end, disallows any change.
-    // By default initialized to `false`.
-    bool ended;
+    //okunurluk açısından explicitly olarak false'a çekiyorum.
+    bool ended = false;
 
     // Events that will be emitted on changes.
     event HighestBidIncreased(address bidder, uint amount);
     event AuctionEnded(address winner, uint amount);
-
-    // Errors that describe failures.
-
-    // The triple-slash comments are so-called natspec
-    // comments. They will be shown when the user
-    // is asked to confirm a transaction or
-    // when an error is displayed.
 
     /// The auction has already ended.
     error AuctionAlreadyEnded();
@@ -38,9 +34,9 @@ contract SimpleAuction {
     /// The function auctionEnd has already been called.
     error AuctionEndAlreadyCalled();
 
-    /// Create a simple auction with `biddingTime`
-    /// seconds bidding time on behalf of the
-    /// beneficiary address `beneficiaryAddress`.
+    // yeni bir auction açmak için gereken 2 parametre var:
+    // 1: ne kadar süreceği (saniye cinsinden belirtiliyor), aşağıda biddingTime kullanılarak auctionEndTime hesaplanıyor.
+    // 2: satıcının adresi (beneficiary)
     constructor(
         uint biddingTime,
         address payable beneficiaryAddress
@@ -49,27 +45,14 @@ contract SimpleAuction {
         auctionEndTime = block.timestamp + biddingTime;
     }
 
-    /// Bid on the auction with the value sent
-    /// together with this transaction.
-    /// The value will only be refunded if the
-    /// auction is not won.
-    function bid() external payable {
-        // No arguments are necessary, all
-        // information is already part of
-        // the transaction. The keyword payable
-        // is required for the function to
-        // be able to receive Ether.
 
-        // Revert the call if the bidding
-        // period is over.
+    function bid() external payable {
+
+        // auction bitmiş.
         if (block.timestamp > auctionEndTime)
             revert AuctionAlreadyEnded();
 
-        // If the bid is not higher, send the
-        // Ether back (the revert statement
-        // will revert all changes in this
-        // function execution including
-        // it having received the Ether).
+        // fiyatı yükseltecek bir teklif konulmadı, iade ediyoruz.
         if (msg.value <= highestBid)
             revert BidNotHighEnough(highestBid);
 
@@ -107,8 +90,7 @@ contract SimpleAuction {
         return true;
     }
 
-    /// End the auction and send the highest bid
-    /// to the beneficiary.
+    // auction bittiğinde bu fonksiyonu manuel olarak çağırmamız gerekecek.
     function auctionEnd() external {
         // It is a good guideline to structure functions that interact
         // with other contracts (i.e. they call functions or send Ether)
