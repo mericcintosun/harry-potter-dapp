@@ -7,7 +7,7 @@
 // for the beneficiary to receive their Ether - contracts cannot activate themselves."
 
 pragma solidity ^0.8.4;
-contract SimpleAuction {
+contract Auction {
     address payable public beneficiary; // Auction sahibi, highest bid'i alacak kişi.
     uint public auctionEndTime; // absolute unix timestamp
 
