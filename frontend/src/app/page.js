@@ -8,6 +8,7 @@ import Hero from '@/components/Hero';
 import NFTGrid from '@/components/NFTGrid';
 import CreateNFTModal from '@/components/CreateNFTModal';
 import Auction from '@/components/Auction';
+import Collections from '@/components/Collections';
 import CreateSection from '@/components/CreateSection';
 import Footer from '@/components/Footer';
 
@@ -50,6 +51,8 @@ export default function Home() {
         isWalletConnected={isWalletConnected}
         onCreateClick={() => setIsCreateModalOpen(true)}
       />
+
+      <Collections />
 
       <CreateSection 
         isWalletConnected={isWalletConnected}
