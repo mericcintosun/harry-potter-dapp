@@ -8,12 +8,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract NFT is ERC721URIStorage, Ownable {
     uint256 private _tokenIdCounter;
 
-    // birden çok collection olma ihtimaline karşı dinamik sembol.
-    // eski versiyon: "MyNFT", "MNFT"
-    constructor(string memory _name, string memory _symbol) public {
-        ERC721(_name, _symbol);
-        Ownable(msg.sender);
-    }
+    // birden çok collection olma ihtimaline karşı dinamik sembol || eski versiyon: "MyNFT", "MNFT"
+    // explicit constructor kaldırılmış herhalde forge compile'lamıyor, inline constructor'a çevirdim.
+    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) Ownable(msg.sender) {}
 
 //    function mint(address to, string memory tokenURI) public onlyOwner {
 //        uint256 tokenId = _tokenIdCounter.current();

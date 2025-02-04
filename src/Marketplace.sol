@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.4;
 
 import "./Auction.sol";
 
@@ -43,7 +43,7 @@ contract Marketplace is Ownable, Pausable {
     error AuctionEndAlreadyCalled();
 
     // constructor
-    constructor(address _acceptedToken, uint256 _ownerCutPerMillion) {
+    constructor(address _acceptedToken, uint256 _ownerCutPerMillion) Ownable(msg.sender) {
         acceptedToken = _acceptedToken;
         ownerCutPerMillion = _ownerCutPerMillion;
     }
@@ -73,7 +73,7 @@ contract Marketplace is Ownable, Pausable {
     // Function to cancel order
     function cancelOrder(address nftAddress, uint256 assetId) external whenNotPaused {
         IERC721 nftRegistry = IERC721(nftAddress);
-        nftOrders[nftAddress][assetId].seller == msg.sender
+        nftOrders[nftAddress][assetId].seller == msg.sender;
         Order memory order = nftOrders[nftAddress][assetId];
         require(order.seller == msg.sender, "This NFT is not listed by you");
         delete nftOrders[nftAddress][assetId];
