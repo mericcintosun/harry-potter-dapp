@@ -1,1 +1,1 @@
-bir şeyler önemli bir şeyler test falan
+foundry 1-2 lüzum lorem ipsum
