@@ -7,6 +7,7 @@ import Hero from '@/components/Hero';
 import NFTGrid from '@/components/NFTGrid';
 import CreateNFTModal from '@/components/CreateNFTModal';
 import Auction from '@/components/Auction';
+import CreateSection from '@/components/CreateSection';
 
 // Tailwind CSS ve Framer Motion kullanılarak geliştirilmiş, responsive ve modern bir tasarım.
 // Bu örnek; NFT oluşturma, mintleme ve listeleme işlemleri için ayrı bileşenler içerir.
@@ -24,6 +25,11 @@ export default function Home() {
       />
       
       <Hero 
+        isWalletConnected={isWalletConnected}
+        onCreateClick={() => setIsCreateModalOpen(true)}
+      />
+
+      <CreateSection 
         isWalletConnected={isWalletConnected}
         onCreateClick={() => setIsCreateModalOpen(true)}
       />

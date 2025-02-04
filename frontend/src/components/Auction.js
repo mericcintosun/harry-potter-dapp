@@ -89,14 +89,14 @@ export default function Auction({ isWalletConnected }) {
               whileHover={{ scale: 1.02 }}
               className="bg-dark/50 backdrop-blur-sm rounded-lg overflow-hidden shadow-xl"
             >
-              <div className="aspect-w-1 aspect-h-1 w-full">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover"
-                />
+              <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden">
+                <div className="relative w-full h-64">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                  />
+                </div>
               </div>
               
               <div className="p-6">
