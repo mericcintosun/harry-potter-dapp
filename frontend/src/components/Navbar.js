@@ -14,9 +14,7 @@ const navigation = [
   { name: 'Collections', href: '#collections' },
 ];
 
-export default function Navbar({ isWalletConnected, setIsWalletConnected }) {
-  const [walletAddress, setWalletAddress] = useState('');
-
+export default function Navbar({ isWalletConnected, walletAddress, onConnect, onDisconnect }) {
   const connectWallet = async () => {
     if (typeof window.ethereum === 'undefined') {
       toast.error('Please install MetaMask or another Web3 wallet!');
@@ -28,13 +26,17 @@ export default function Navbar({ isWalletConnected, setIsWalletConnected }) {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
-      setWalletAddress(address);
-      setIsWalletConnected(true);
+      onConnect(address);
       toast.success('Wallet connected successfully!');
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet');
     }
+  };
+
+  const disconnectWallet = () => {
+    onDisconnect();
+    toast.success('Wallet disconnected successfully!');
   };
 
   return (
@@ -73,16 +75,30 @@ export default function Navbar({ isWalletConnected, setIsWalletConnected }) {
               </div>
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={connectWallet}
-                  className="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                >
-                  {isWalletConnected
-                    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-                    : 'Connect Wallet'}
-                </motion.button>
+                {isWalletConnected ? (
+                  <div className="flex items-center gap-4">
+                    <span className="text-silver text-sm">
+                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    </span>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={disconnectWallet}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
+                      Disconnect
+                    </motion.button>
+                  </div>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={connectWallet}
+                    className="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                  >
+                    Connect Wallet
+                  </motion.button>
+                )}
               </div>
             </div>
           </div>

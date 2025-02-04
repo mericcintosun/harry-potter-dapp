@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import NFTGrid from '@/components/NFTGrid';
 import CreateNFTModal from '@/components/CreateNFTModal';
 import Auction from '@/components/Auction';
 import CreateSection from '@/components/CreateSection';
+import Footer from '@/components/Footer';
 
 // Tailwind CSS ve Framer Motion kullanılarak geliştirilmiş, responsive ve modern bir tasarım.
 // Bu örnek; NFT oluşturma, mintleme ve listeleme işlemleri için ayrı bileşenler içerir.
@@ -16,12 +18,32 @@ import CreateSection from '@/components/CreateSection';
 export default function Home() {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+
+  // Sayfa yüklendiğinde wallet bağlantısını sıfırla
+  useEffect(() => {
+    setIsWalletConnected(false);
+    setWalletAddress('');
+  }, []);
+
+  const handleWalletConnect = (address) => {
+    setIsWalletConnected(true);
+    setWalletAddress(address);
+  };
+
+  const handleWalletDisconnect = () => {
+    setIsWalletConnected(false);
+    setWalletAddress('');
+  };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-primary">
+      <Toaster position="top-center" />
       <Navbar 
         isWalletConnected={isWalletConnected}
-        setIsWalletConnected={setIsWalletConnected}
+        walletAddress={walletAddress}
+        onConnect={handleWalletConnect}
+        onDisconnect={handleWalletDisconnect}
       />
       
       <Hero 
@@ -42,6 +64,8 @@ export default function Home() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
       />
+
+      <Footer />
     </main>
   );
 }
