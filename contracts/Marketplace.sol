@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 contract Marketplace is Ownable, Pausable {
     using Address for address;
@@ -19,6 +20,14 @@ contract Marketplace is Ownable, Pausable {
     // Mapping nestli olduğundan nftAuctions[Adress][Id] kullanarak spesifik bir NFT'nin auctionına erişebiliyoruz.
     // Örneğin: nftAuctions[0x20ee7b720f4e4...][100];
     mapping(address => mapping(uint256 => Auction)) public nftAuctions;
+    
+    mapping(address => mapping(uint256 => Order)) public nftOrders;
+    struct Order {
+        address seller;
+        uint256 price;
+        uint256 expiresAt;
+    }
+
 
     // events
     event OrderCreated(address indexed seller, address indexed nftAddress, uint256 indexed assetId, uint256 priceInWei, uint256 expiresAt);
@@ -45,13 +54,41 @@ contract Marketplace is Ownable, Pausable {
         // Emit event
     }
 
+    // Function to create order
     function createOrder(address nftAddress, uint256 assetId, uint256 priceInWei, uint256 expiresAt) external whenNotPaused {
+        IERC721 nftRegistry = IERC721(nftAddress);
+        require(nftRegistry.ownerOf(assetId) == msg.sender, "You are not the owner of this NFT");
+        require(nftRegistry.isApprovedForAll(msg.sender, address(this)), "Marketplace not approved to transfer this NFT");
+        require(expiresAt > block.timestamp, "Invalid expiration time");
+        require(priceInWei > 0, "Price must be greater than zero");
+        require(IERC20(acceptedToken).transferFrom(msg.sender, owner(), publicationFeeInWei), "Publication fee transfer failed");
+        nftOrders[nftAddress][assetId] = Order({
+            seller: msg.sender,
+            price: priceInWei,
+            expiresAt: expiresAt
+        });
+        emit OrderCreated(msg.sender, nftAddress, assetId, priceInWei, expiresAt);
     }
 
+    // Function to cancel order
     function cancelOrder(address nftAddress, uint256 assetId) external whenNotPaused {
+        IERC721 nftRegistry = IERC721(nftAddress);
+        nftOrders[nftAddress][assetId].seller == msg.sender
+        Order memory order = nftOrders[nftAddress][assetId];
+        require(order.seller == msg.sender, "This NFT is not listed by you");
+        delete nftOrders[nftAddress][assetId];
+        emit OrderCancelled(msg.sender, nftAddress, assetId);
     }
 
+    // Function to execute order
     function executeOrder(address nftAddress, uint256 assetId, uint256 price) external whenNotPaused {
+        Order memory order = nftOrders[nftAddress][assetId];
+        require(order.seller != msg.sender, "Seller cannot buy their own NFT");
+        require(order.seller != address(0), "This NFT is not listed for sale");
+        require(IERC20(acceptedToken).transferFrom(msg.sender, order.seller, price), "Payment failed");
+        IERC721(nftAddress).safeTransferFrom(order.seller, msg.sender, assetId);
+        delete nftOrders[nftAddress][assetId];
+        emit OrderSuccessful(msg.sender, nftAddress, assetId, price);
     }
 
 
@@ -92,6 +129,7 @@ contract Marketplace is Ownable, Pausable {
     }
 
     function _requireERC721(address nftAddress) internal view {
+        require(IERC721(nftAddress).supportsInterface(0x80ac58cd), "Address is not a valid ERC721 contract");
     }
 
     // gerekli olmayabilir
