@@ -166,8 +166,8 @@ contract TestAuction is Test {
 
 
                                        // *** BALANCE CHECKS *** //
-        //at the end account 2,3,4 should all have the starting point of 100, while account 1 will have 60.
-        //beneficiary should be up 40 compared to the starting point.
+        //at the end account 2,3,4 should all have the starting balance of 100 wei, while account 1 should have 60 wei.
+        //beneficiary should be up 40 wei compared to the starting point.
 
         //account 2,3,4
         assertEq(ACCOUNT_02_TEST_SCENARIO_1.balance, 100 wei);
