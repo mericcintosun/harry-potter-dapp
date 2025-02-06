@@ -82,4 +82,23 @@ contract TestAuction is Test {
         assertEq(auction.getHighestBidder(), BOB);
         auction.getContractBalance();
     }
+
+    function test_auctionEnd() public {
+        vm.warp(block.timestamp + 5 days + 1 seconds);
+
+        //save the initial values of owners balance and the highest bid.
+        uint initialBalanceBeneficiary = address(BENEFICIARY).balance;
+        uint bidHighest = auction.getHighestBid();
+
+        //end auction
+        auction.auctionEnd();
+
+        uint endBalanceBeneficiary = BENEFICIARY.balance;
+
+        //confirm the beneficiary (owner of the auction) got the highest bid.
+        assertEq(endBalanceBeneficiary, initialBalanceBeneficiary + bidHighest);
+
+        //check if variable ended was set to true as it should be.
+        assertEq(auction.ended(), true);
+    }
 }

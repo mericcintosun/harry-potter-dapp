@@ -19,7 +19,7 @@ contract Auction {
     mapping(address => uint) pendingReturns;
 
     //okunurluk açısından explicitly olarak false'a çekiyorum.
-    bool ended = false;
+    bool public ended = false;
 
     // Events that will be emitted on changes.
     event HighestBidIncreased(address bidder, uint amount);
