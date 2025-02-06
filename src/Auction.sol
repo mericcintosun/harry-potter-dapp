@@ -81,8 +81,17 @@ contract Auction {
             // msg.sender is not of type `address payable` and must be
             // explicitly converted using `payable(msg.sender)` in order
             // use the member function `send()`.
+
+            /*
+            // .send() fails every single time on the tests, still yet to solve the problem.
             if (!payable(msg.sender).send(amount)) {
                 // No need to call throw here, just reset the amount owing
+                pendingReturns[msg.sender] = amount;
+                return false;
+            }
+            */
+            (bool success, ) = payable(msg.sender).call{value: amount}("");
+            if (!success) {
                 pendingReturns[msg.sender] = amount;
                 return false;
             }
@@ -117,5 +126,17 @@ contract Auction {
 
         // 3. Interaction
         beneficiary.transfer(highestBid);
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function getHighestBid() public view returns (uint256) {
+        return highestBid;
+    }
+
+    function getHighestBidder() public view returns (address) {
+        return highestBidder;
     }
 }
