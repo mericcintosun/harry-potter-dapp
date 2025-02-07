@@ -26,7 +26,6 @@
             uint256 expiresAt;
         }
 
-
         // events
         event OrderCreated(address indexed seller, address indexed nftAddress, uint256 indexed assetId, uint256 priceInWei, uint256 expiresAt);
         event OrderCancelled(address indexed seller, address indexed nftAddress, uint256 indexed assetId);
@@ -52,7 +51,7 @@
         }
 
         // Function to create order
-        function createOrder(address nftAddress, uint256 assetId, uint256 priceInWei, uint256 expiresAt) external whenNotPaused {
+        function createOrder(address nftAddress, uint256 assetId, uint256 priceInWei, uint256 expiresAt) external payable whenNotPaused {
             IERC721 nftRegistry = IERC721(nftAddress);
             require(nftRegistry.ownerOf(assetId) == msg.sender, "You are not the owner of this NFT");
             require(nftRegistry.isApprovedForAll(msg.sender, address(this)), "Marketplace not approved to transfer this NFT");
