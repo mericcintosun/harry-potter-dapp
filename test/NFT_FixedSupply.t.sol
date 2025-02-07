@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-/*
 pragma solidity ^0.8.4;
 
 import "forge-std/Test.sol";
@@ -12,7 +11,7 @@ contract NFTTest is Test {
     address private user = address(0x123);
 
     function setUp() public {
-        nft = new NFT("MyNFT", "MNFT");
+        nft = new NFT("MyNFT", "MNFT", 10, "ipfs://template");
     }
 
     function testMint() public {
@@ -40,6 +39,10 @@ contract NFTTest is Test {
         assertEq(nft.totalSupply(), 1);
         //check if the total supply increases by 1 after the minting process.
     }
-}
 
-*/
+    /*
+    function testTokenURI() {
+
+    }
+    */
+}
