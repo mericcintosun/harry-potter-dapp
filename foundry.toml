@@ -1,0 +1,12 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+auto_detect_solc = true
+
+# remaplemeden görmüyor sağ olsun @openzeppelin'i
+remappings = [
+    "@openzeppelin/contracts=node_modules/@openzeppelin/contracts/"
+]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

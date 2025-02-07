@@ -1,1 +1,19 @@
-{ "dependencies": { "react-icons": "^5.4.0" } }
+{
+  "name": "harry-potter-dapp",
+  "version": "1.0.0",
+  "description": "foundry 1-2 lüzum lorem ipsum",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
+    "react-icons": "^5.4.0"
+  }
+}
