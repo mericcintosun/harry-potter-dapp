@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "forge-std/Script.sol";
-import "../src/MyNFT.sol";
+import "../src/NFT_FixedSupply.sol";
 import "../src/Marketplace.sol";
 
 contract DeployAll is Script {
@@ -18,8 +18,8 @@ contract DeployAll is Script {
         vm.startBroadcast();
 
         //we should deploy all the NFT collections here, for now just leaving a placeholder of a single collection.
-        NFT collection1 = new NFT("Collection1", "C1");
-        console.log("Collection1 deployed at:", address(collection1));
+        //NFT collection1 = new NFT("Collection1", "C1");
+        //console.log("Collection1 deployed at:", address(collection1));
 
         //deploy the marketplace.
         Marketplace marketplace = new Marketplace(ownerCutPerMillion);

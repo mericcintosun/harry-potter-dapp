@@ -13,7 +13,7 @@ contract NFT is ERC721URIStorage, Ownable {
     string public baseURI;
 
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply, string memory _baseURI)
-    ERC721(_name, _symbol) Ownable() {
+    ERC721(_name, _symbol) Ownable(msg.sender) {
         maxSupply = _maxSupply;
         baseURI = _baseURI;
     }
@@ -23,14 +23,11 @@ contract NFT is ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenIdCounter;
         _safeMint(receiver, tokenId);
         _tokenIdCounter += 1;
-        //ERC721URIStorage
-        _setTokenURI(tokenId, string(abi.encodePacked(baseURI, "/", Strings.toString(tokenId), ".json")));
-    }
+        _setTokenURI(tokenId, baseURI);    }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(_ownerOf(tokenId) != address(0));
-        return string(abi.encodePacked(baseURI, "/", Strings.toString(tokenId), ".json"));
-    }
+        return baseURI;    }
 
     // Toplam NFT sayısını döndürme
     function totalSupply() public view returns (uint256) {

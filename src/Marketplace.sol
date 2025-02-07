@@ -7,6 +7,8 @@
     import "@openzeppelin/contracts/utils/Address.sol";
     import "@openzeppelin/contracts/utils/Pausable.sol";
     import "@openzeppelin/contracts/interfaces/IERC721.sol";
+    import "./NFT_FixedSupply.sol";
+    import "./NFT_Collection.sol";
 
     contract Marketplace is Ownable, Pausable {
         using Address for address;
@@ -86,6 +88,23 @@
             IERC721(nftAddress).safeTransferFrom(order.seller, msg.sender, assetId);
             delete nftOrders[nftAddress][assetId];
             emit OrderSuccessful(msg.sender, nftAddress, assetId, msg.value);
+        }
+
+        function createNFT(
+            bool isFixedSupply,
+            address creator,
+            string memory name,
+            string memory symbol,
+            uint256 maxSupply,
+            string memory baseURI
+        ) external onlyOwner whenNotPaused {
+            address nftAddress;
+
+            if (isFixedSupply) {
+                nftAddress = address(new NFT(name, symbol, maxSupply, baseURI));
+            } else {
+                nftAddress = address(new NFT_C(name, symbol, maxSupply, baseURI));
+            }
         }
 
         function createAuction(address nftAddress, uint256 assetId, uint256 biddingTime) external whenNotPaused {
