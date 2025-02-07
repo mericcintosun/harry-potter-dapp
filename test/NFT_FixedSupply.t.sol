@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "forge-std/Test.sol";
-import "src/MyNFT.sol";
+import "src/NFT_FixedSupply.sol";
 
 contract NFTTest is Test {
     NFT private nft;
