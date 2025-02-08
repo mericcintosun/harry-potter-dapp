@@ -148,11 +148,10 @@
         }
 
         // gerekli olmayabilir
-        function _checkAuctionStatus(address nftAddress, uint256 assetId) internal view returns (bool) {
-            //
-            //
-            //
-            return false;
+        function _checkAuctionStatus(address _unusedNftAddress, uint256 _unusedAssetId) internal pure returns (bool) {
+            return true;
+        }
+
         }
 
     }
